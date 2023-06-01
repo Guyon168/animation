@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star Line</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const w = (canvas.width = canvas.offsetWidth);
+      const h = (canvas.height = canvas.offsetHeight);
+
+      class Star {
+        constructor() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+          this.size = Math.random() * 0.5 + 1;
+          this.speed = Math.random() * 0.5 + 0.1;
+          this.angle = Math.floor(Math.random() * 360);
+        }
+
+        update() {
+          this.angle += this.speed;
+          this.x += Math.sin((this.angle * Math.PI) / 180) * this.speed;
+          this.y += Math.cos((this.angle * Math.PI) / 180) * this.speed;
+
+          if (this.x < -5) {
+            this.x = w + 5;
+          }
+          if (this.y < -5) {
+            this.y = h + 5;
+          }
+          if (this.x > w + 5) {
+            this.x = -5;
+          }
+          if (this.y > h + 5) {
+            this.y = -5;
+          }
+        }
+
+        draw() {
+          ctx.fillStyle = "white";
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y - this.size);
+          for (let i = 0; i < 5; i++) {
+            let x = Math.sin((this.angle + i * 72) * (Math.PI / 180)) * this.size;
+            let y = Math.cos((this.angle + i * 72) * (Math.PI / 180)) * this.size;
+            ctx.lineTo(this.x + x, this.y + y);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+
+      let stars = [];
+
+      for (let i = 0; i < 100; i++) {
+        stars.push(new Star());
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < stars.length; i++) {
+          stars[i].update();
+          stars[i].draw();
+        }
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
